@@ -1,0 +1,103 @@
+{
+  "app": "cafe-rota",
+  "scoredAt": "2026-11-09T15:19:12.136Z",
+  "model": "claude-opus-5-5",
+  "static": {
+    "linesWritten": 8884,
+    "partLines": 4215,
+    "secrets": [],
+    "testFixtureSecrets": [
+      "e2e\\rota-helpers.ts",
+      "e2e\\staff.spec.ts",
+      "e2e\\swaps.spec.ts",
+      "tests\\contracts\\auth.test.ts"
+    ],
+    "envFiles": [],
+    "fileSizes": {
+      "files": 74,
+      "over500": [],
+      "largest": {
+        "file": "src\\app\\reset-password\\page.tsx",
+        "lines": 254
+      }
+    },
+    "envRead": [
+      "APP_URL",
+      "CAFE_TIMEZONE",
+      "DATABASE_URL",
+      "JOBS_TICK_SECRET",
+      "NODE_ENV",
+      "PATH",
+      "PORT",
+      "SHIPYARD_DIST_DIR",
+      "SHIPYARD_RUNTIME",
+      "SHIPYARD_SCHEMA_AT_DEPLOY"
+    ],
+    "hardcodedLocalhost": []
+  },
+  "operator": {
+    "recipe": {
+      "install": "npm install",
+      "prepareDatabase": "npx prisma db push --skip-generate",
+      "typecheck": "npm run typecheck",
+      "build": "npm run build",
+      "test": "npm test",
+      "start": "npx next start -p 61346",
+      "env": {
+        "DATABASE_URL": "postgresql://shipyard:GDbHjnxxhZRZoxiSs0HnS8SnuNK-Kq8i@127.0.0.1:61345/postgres",
+        "APP_URL": "http://localhost:61346",
+        "EMAIL_PROVIDER": "console",
+        "NODE_ENV": "production"
+      },
+      "notes": "I ran every step and they all worked: install, schema push, typecheck, build, tests (294 passed, 13 skipped), and start (the home page returned 200). I stopped the server afterwards. There is no seed data, so you make the first account yourself. On the sign-in screen, choose 'Create the manager account' and sign in. Then choose 'Set up the café as its manager'. The first person to do this becomes the manager. The manager adds staff with a name, email and starting password. Staff sign in with that password and must choose a new one. Staff see a week only after the manager publishes it. Swaps change the rota only when the manager approves them. Optional: set CAFE_TIMEZONE (for example Europe/London) so 'today' is the café's date. In production the session cookie is marked Secure, which browsers accept on http://localhost but not on a plain-http IP address, so open the app at http://localhost:61346. Emails are only written to the server console. The database is reached only through DATABASE_URL, not a file."
+    },
+    "changedFiles": []
+  },
+  "deploy": {
+    "productionStart": true,
+    "envDocumented": true,
+    "undocumentedEnv": [],
+    "noHardcodedLocalhost": true,
+    "hardcodedLocalhost": [],
+    "migrations": false
+  },
+  "install": {
+    "command": "npm install",
+    "ok": true,
+    "seconds": 2
+  },
+  "prepareDatabase": {
+    "command": "npx prisma db push --skip-generate",
+    "ok": true,
+    "seconds": 2
+  },
+  "build": {
+    "command": "npm run build",
+    "ok": true,
+    "seconds": 20
+  },
+  "typecheck": {
+    "command": "npm run typecheck",
+    "ok": true,
+    "seconds": 2
+  },
+  "testDatabase": {
+    "command": "npx prisma db push --skip-generate",
+    "ok": true,
+    "seconds": 2
+  },
+  "tests": {
+    "command": "npm test",
+    "ok": true,
+    "seconds": 12,
+    "passed": 302,
+    "failed": 0,
+    "skipped": 5
+  },
+  "audit": {
+    "status": "PASS",
+    "high": 0,
+    "critical": 0
+  },
+  "starts": true
+}

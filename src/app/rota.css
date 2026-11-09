@@ -1,0 +1,213 @@
+/*
+ * The rota's own look, on top of ui_foundation's tokens. Every value is a
+ * token; no colour is typed here. Also turns ui_blocks' side column into the
+ * top bar DESIGN.md asks for, without touching that component's files.
+ */
+
+.rota-frame .blk-shell {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto 1fr;
+  min-height: 0;
+}
+
+.rota-frame .blk-shell-nav {
+  border-right: 0;
+  border-bottom: 1px solid var(--line);
+  padding: calc(var(--space) * 2) calc(var(--space) * 4);
+}
+
+.rota-frame .blk-shell-nav ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: calc(var(--space) * 1);
+}
+
+.rota-frame .blk-nav-link {
+  border-left: 0;
+  border-bottom: 3px solid transparent;
+}
+
+.rota-frame .blk-nav-link.is-current {
+  border-bottom-color: var(--accent);
+}
+
+.rota-frame .blk-shell-main {
+  padding: calc(var(--space) * 5) calc(var(--space) * 4) calc(var(--space) * 10);
+  max-width: 64rem;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.rota-topbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: calc(var(--space) * 2);
+  padding: calc(var(--space) * 3) calc(var(--space) * 4);
+  background: var(--surface);
+}
+
+.rota-brand {
+  font-weight: 700;
+  font-size: 1.125rem;
+  margin: 0;
+}
+
+.rota-who {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--space) * 3);
+  color: var(--muted);
+  font-size: 0.9375em;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.rota-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: calc(var(--space) * 3);
+  margin-bottom: calc(var(--space) * 4);
+}
+
+.rota-head h1 {
+  margin: 0;
+}
+
+.rota-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: calc(var(--space) * 2);
+  margin-bottom: calc(var(--space) * 4);
+}
+
+.rota-week-name {
+  font-weight: 600;
+  min-width: 9rem;
+  text-align: center;
+}
+
+.rota-lede,
+.rota-note {
+  color: var(--muted);
+}
+
+.rota-empty {
+  padding: calc(var(--space) * 5);
+  border: 1px dashed var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--muted);
+}
+
+.rota-form {
+  display: grid;
+  gap: calc(var(--space) * 4);
+}
+
+.rota-field {
+  display: grid;
+  gap: calc(var(--space) * 1);
+}
+
+.rota-field label {
+  margin: 0;
+}
+
+.rota-field input,
+.rota-field select {
+  width: 100%;
+}
+
+.rota-field input[aria-invalid='true'],
+.rota-field select[aria-invalid='true'] {
+  border-color: var(--danger-fg);
+  border-width: 2px;
+}
+
+.rota-pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: calc(var(--space) * 3);
+}
+
+.rota-hint {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.8125em;
+}
+
+.rota-error {
+  margin: 0;
+  padding: calc(var(--space) * 2) calc(var(--space) * 3);
+  border-radius: var(--radius);
+  background: var(--danger);
+  color: var(--danger-fg);
+  font-size: 0.875em;
+}
+
+.rota-row-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: calc(var(--space) * 2);
+}
+
+.rota-cards {
+  list-style: none;
+  margin: 0 0 calc(var(--space) * 8);
+  padding: 0;
+  display: grid;
+  gap: calc(var(--space) * 3);
+  max-width: 34rem;
+}
+
+.rota-card {
+  display: grid;
+  gap: calc(var(--space) * 2);
+  padding: calc(var(--space) * 4);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.rota-card.is-next {
+  border-left: 4px solid var(--accent);
+}
+
+.rota-card-day {
+  margin: 0;
+  font-weight: 600;
+}
+
+.rota-card-time {
+  margin: 0;
+  font-size: 1.5rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.rota-card-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: calc(var(--space) * 2);
+}
+
+.rota-answers {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: calc(var(--space) * 2);
+  max-width: 34rem;
+}
+
+.rota-plain {
+  max-width: 30rem;
+  margin: calc(var(--space) * 12) auto;
+  padding: 0 calc(var(--space) * 4);
+}

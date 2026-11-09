@@ -1,0 +1,178 @@
+// The database, as the code understands it.
+//
+// This file starts almost empty on purpose. Components add their own models to
+// it when they install — the installer appends fragments and refuses when a
+// model name is already taken, so two components cannot quietly disagree about
+// what a `User` is.
+//
+// Anything you add by hand goes at the bottom, under the marker. The installer
+// never writes above it.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// >>> shipyard:components — installed components add their models below this line
+
+// --- postgres_schema ---
+/// Small pieces of configuration the app needs to remember between restarts.
+/// Deliberately not a place for secrets — those live in the environment.
+model AppSetting {
+  key       String   @id
+  value     String
+  updatedAt DateTime @updatedAt
+
+  @@map("app_settings")
+}
+
+// --- auth ---
+model User {
+  id                  String    @id @default(cuid())
+  email               String    @unique
+  name                String?
+  /// bcrypt hash. The plain password is never stored, logged or emailed.
+  passwordHash        String
+  emailVerifiedAt     DateTime?
+  /// Set when an account is suspended. Existing sessions stop working at once.
+  disabledAt          DateTime?
+  /// No longer read: failed sign-ins are counted per address in LoginAttempt
+  /// (auth 1.2.0). Kept so projects and parts that still set them keep working.
+  failedLoginAttempts Int       @default(0)
+  lockedUntil         DateTime?
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+
+  sessions Session[]
+
+  @@index([email])
+  @@map("users")
+}
+
+model Session {
+  id String @id @default(cuid())
+  /// SHA-256 of the cookie value. The value itself is never stored, so a
+  /// leaked backup does not contain usable sessions.
+  tokenHash String    @unique
+  userId    String
+  expiresAt DateTime
+  revokedAt DateTime?
+  userAgent String?
+  ip        String?
+  createdAt DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+  @@map("sessions")
+}
+
+/// Failed sign-ins per email address, whether or not an account has it, so a
+/// lock never tells an unknown address from a real one.
+model LoginAttempt {
+  /// SHA-256 of the normalised address. The address itself is not stored.
+  key         String    @id
+  failures    Int       @default(0)
+  lockedUntil DateTime?
+  updatedAt   DateTime  @updatedAt
+
+  @@map("login_attempts")
+}
+
+// --- password_reset ---
+/// A password reset in progress.
+///
+/// `userId` is a plain indexed string rather than a Prisma relation, because
+/// `User` belongs to the `auth` component and a relation would need a field on
+/// its side too. See ARCHITECTURE.md, "Never relate across components".
+model PasswordResetToken {
+  id String @id @default(cuid())
+  /// SHA-256 of the value in the emailed link. The value itself is never
+  /// stored, so a leaked backup contains no usable reset links.
+  tokenHash String    @unique
+  userId    String
+  expiresAt DateTime
+  /// Set the moment it is spent. A reset link works exactly once.
+  usedAt    DateTime?
+  /// Who asked. Kept for abuse investigation, not for analytics.
+  requestedIp String?
+  createdAt   DateTime @default(now())
+
+  @@index([userId])
+  @@index([expiresAt])
+  @@map("password_reset_tokens")
+}
+// <<< shipyard:components
+
+// Your own models go here.
+
+/// Who someone is on the rota. `userId` points at auth's User as a plain id
+/// (ARCHITECTURE.md: never relate across components).
+model StaffMember {
+  id                 String    @id @default(cuid())
+  userId             String    @unique
+  /// "manager" or "staff".
+  role               String
+  /// Set when the manager gives a starting password; cleared when they pick their own.
+  mustChangePassword Boolean   @default(false)
+  /// Set when the manager removes them. Kept so past shifts still have a name.
+  removedAt          DateTime?
+  createdAt          DateTime  @default(now())
+
+  @@index([role])
+  @@map("staff_members")
+}
+
+/// One week of the rota, named by its Monday. Staff see it only once published.
+model RotaWeek {
+  id          String    @id @default(cuid())
+  startsOn    DateTime  @unique @db.Date
+  publishedAt DateTime?
+  createdAt   DateTime  @default(now())
+
+  shifts Shift[]
+
+  @@map("rota_weeks")
+}
+
+model Shift {
+  id        String   @id @default(cuid())
+  weekId    String
+  day       DateTime @db.Date
+  /// "HH:MM", 24-hour.
+  startTime String
+  endTime   String
+  /// Who is working: auth's User id.
+  userId    String
+  createdAt DateTime @default(now())
+
+  week         RotaWeek      @relation(fields: [weekId], references: [id], onDelete: Cascade)
+  swapRequests SwapRequest[]
+
+  @@index([weekId])
+  @@index([userId, day])
+  @@map("shifts")
+}
+
+model SwapRequest {
+  id         String    @id @default(cuid())
+  shiftId    String
+  fromUserId String
+  toUserId   String
+  /// "pending", "approved" or "declined".
+  status     String    @default("pending")
+  createdAt  DateTime  @default(now())
+  decidedAt  DateTime?
+
+  shift Shift @relation(fields: [shiftId], references: [id], onDelete: Cascade)
+
+  @@index([shiftId])
+  @@index([status])
+  @@index([fromUserId])
+  @@map("swap_requests")
+}

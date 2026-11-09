@@ -1,0 +1,9 @@
+{"steps":[
+{"id":"design","status":"done","summary":"Each screen's details and wording are in DESIGN.md and the build plan in progress.md (checked again; nothing changed)"},
+{"id":"phase-1","status":"done","summary":"Sign-in landing, first-manager set-up, Staff screen and first-sign-in password change work on the real database (checked again)"},
+{"id":"phase-2","status":"done","summary":"Plan and publish a week, My shifts, and swap requests with approval work end to end (checked again)"},
+{"id":"phase-3","status":"done","summary":"Titled Café rota, kept out of search engines, sample week on the rota, README says what to try (checked again)"},
+{"id":"tests","status":"done","summary":"Browser checks for all four core flows: staff and sign-in, plan and publish a week, my shifts, swap requests (12 checks, all passing)"},
+{"id":"browser-check","status":"done","summary":"Walked every screen on phone and laptop; fixed pages scrolling sideways on phones, squashed table headings and a lower-case caption"},
+{"id":"security","status":"done","summary":"Every screen and route checks role; closed a hole where any signed-in session could replace the account's password"}
+]}
